@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class CountryDetails extends Equatable {
+  final String cca2;
   final String name;
   final String flag;
   final int population;
@@ -11,6 +12,7 @@ class CountryDetails extends Equatable {
   final List<String> timezones;
 
   const CountryDetails({
+    required this.cca2,
     required this.name,
     required this.flag,
     required this.population,
@@ -23,6 +25,7 @@ class CountryDetails extends Equatable {
 
   @override
   List<Object?> get props => [
+    cca2,
     name,
     flag,
     population,

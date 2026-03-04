@@ -13,14 +13,12 @@ class CountriesList extends StatelessWidget {
   final List<CountrySummary> countries;
   final void Function(CountrySummary country)? onCountryTap;
   final bool useSearchCard;
-  final bool showCapital;
 
   const CountriesList({
     super.key,
     required this.countries,
     this.onCountryTap,
     this.useSearchCard = false,
-    this.showCapital = false,
   });
 
   @override
@@ -57,10 +55,9 @@ class CountriesList extends StatelessWidget {
                           CountriesCard(
                             country: country,
                             isFavorite: isFav,
-                            showCapital: showCapital,
                             onToggleFavorite: () => context
                                 .read<FavoritesBloc>()
-                                .add(ToggleFavoriteEvent(country)),
+                                .add(ToggleFavoriteEvent(country.cca2)),
                             onTap: onCountryTap == null 
                                 ? null 
                                 : () => onCountryTap!(country),

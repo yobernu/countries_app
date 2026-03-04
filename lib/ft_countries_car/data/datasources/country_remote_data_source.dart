@@ -84,12 +84,14 @@ class CountryRemoteDataSource implements ICountryRemoteDataSource {
       // REST Countries alpha endpoint returns a list with one item.
       if (response.data is List && (response.data as List).isNotEmpty) {
         final map = (response.data as List).first as Map<String, dynamic>;
-        return CountryDetailsModel.fromJson(map);
+        return CountryDetailsModel.fromJson(map, fallbackCca2: cca2);
       }
 
       if (response.data is Map<String, dynamic>) {
         return CountryDetailsModel.fromJson(
-            response.data as Map<String, dynamic>);
+          response.data as Map<String, dynamic>,
+          fallbackCca2: cca2,
+        );
       }
 
       throw ServerException();

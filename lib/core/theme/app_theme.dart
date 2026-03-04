@@ -39,7 +39,7 @@ class AppTheme {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
-      iconTheme: IconThemeData(color: AppColors.textSecondary),
+      iconTheme: IconThemeData(color: AppColors.darkBackground),
       // example: override elevated button style etc
     );
   }

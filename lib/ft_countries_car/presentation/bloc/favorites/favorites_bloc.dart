@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../domain/entities/country_summary.dart';
+import '../../../domain/entities/country_details.dart';
 import '../../../domain/usecases/manage_favorites.dart';
 import 'favorites_event.dart';
 import 'favorites_state.dart';
@@ -20,7 +20,7 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
     emit(state.copyWith(status: FavoritesStatus.loading, message: ''));
 
     try {
-      final List<CountrySummary> result =
+      final List<CountryDetails> result =
           await manageFavorites.getFavorites();
 
       if (result.isEmpty) {
@@ -53,7 +53,7 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
     Emitter<FavoritesState> emit,
   ) async {
     try {
-      await manageFavorites.toggleFavorite(event.country);
+      await manageFavorites.toggleFavorite(event.cca2);
       // Refresh favorites after toggle
       add(const LoadFavorites());
     } catch (_) {

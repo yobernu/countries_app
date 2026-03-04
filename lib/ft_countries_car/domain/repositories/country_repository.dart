@@ -5,7 +5,7 @@ abstract class ICountryRepository {
   Future<List<CountrySummary>> getAllCountries();
   Future<List<CountrySummary>> searchCountries(String query);
   Future<CountryDetails> getCountryDetails(String cca2);
-  Future<List<CountrySummary>> getFavorites();
-  Future<void> toggleFavorite(CountrySummary country);
+  Future<List<CountryDetails>> getFavorites();
+  Future<void> toggleFavorite(String cca2);
   Future<bool> isFavorite(String cca2);
 }

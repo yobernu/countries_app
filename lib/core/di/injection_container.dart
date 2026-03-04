@@ -27,9 +27,9 @@ Future<void> initDependencies() async {
   await Hive.initFlutter();
   Hive.registerAdapter(CountrySummaryModelAdapter());
 
-  // box for favourites
-  final favoritesBox = await Hive.openBox<CountrySummaryModel>('favorites');
-  sl.registerLazySingleton<Box<CountrySummaryModel>>(
+  // box for favourite country codes (cca2)
+  final favoritesBox = await Hive.openBox<String>('favorite_codes');
+  sl.registerLazySingleton<Box<String>>(
     () => favoritesBox,
     instanceName: 'favorites',
   );
@@ -41,10 +41,18 @@ Future<void> initDependencies() async {
     instanceName: 'cache',
   );
 
+  // box for cached capitals keyed by cca2 (offline favorites support)
+  final capitalBox = await Hive.openBox<String>('cached_capitals');
+  sl.registerLazySingleton<Box<String>>(
+    () => capitalBox,
+    instanceName: 'capital',
+  );
+
   sl.registerLazySingleton<ICountryLocalDataSource>(
     () => CountryLocalDataSource(
-      sl<Box<CountrySummaryModel>>(instanceName: 'favorites'),
+      sl<Box<String>>(instanceName: 'favorites'),
       sl<Box<CountrySummaryModel>>(instanceName: 'cache'),
+      sl<Box<String>>(instanceName: 'capital'),
     ),
   );
 

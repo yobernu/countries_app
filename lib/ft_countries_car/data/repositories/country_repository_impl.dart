@@ -4,7 +4,6 @@ import '../../domain/entities/country_summary.dart';
 import '../../domain/repositories/country_repository.dart';
 import '../datasources/country_local_data_source.dart';
 import '../datasources/country_remote_data_source.dart';
-import '../models/country_summary_model.dart';
 
 class CountryRepositoryImpl implements ICountryRepository {
   final ICountryRemoteDataSource remoteDataSource;
@@ -39,7 +38,13 @@ class CountryRepositoryImpl implements ICountryRepository {
   @override
   Future<CountryDetails> getCountryDetails(String cca2) async {
     try {
-      return await remoteDataSource.getCountryDetails(cca2);
+      final details = await remoteDataSource.getCountryDetails(cca2);
+      try {
+        await localDataSource.cacheCountryCapital(cca2, details.capital);
+      } catch (_) {
+        // ignore local cache failures; detail response is still valid
+      }
+      return details;
     } on ServerException {
       rethrow;
     }
@@ -56,25 +61,59 @@ class CountryRepositoryImpl implements ICountryRepository {
   }
 
   @override
-  Future<List<CountrySummary>> getFavorites() async {
+  Future<List<CountryDetails>> getFavorites() async {
     try {
-      return await localDataSource.getFavorites();
+      final codes = await localDataSource.getFavorites();
+      if (codes.isEmpty) return const [];
+
+      final cachedByCode = {
+        for (final c in await localDataSource.getCachedCountries()) c.cca2: c,
+      };
+
+      final results = await Future.wait(
+        codes.map((code) async {
+          try {
+            final details = await remoteDataSource.getCountryDetails(code);
+            try {
+              await localDataSource.cacheCountryCapital(code, details.capital);
+            } catch (_) {
+              // ignore local cache failures; remote response is still valid
+            }
+            return details;
+          } catch (_) {
+            final cached = cachedByCode[code];
+            if (cached == null) return null;
+            String capital = '';
+            try {
+              capital = await localDataSource.getCachedCountryCapital(code) ?? '';
+            } catch (_) {
+              // ignore cache read failures and keep empty fallback
+            }
+            return CountryDetails(
+              cca2: cached.cca2,
+              name: cached.name,
+              flag: cached.flag,
+              population: cached.population,
+              capital: capital,
+              region: '',
+              subregion: '',
+              area: 0,
+              timezones: const [],
+            );
+          }
+        }),
+      );
+
+      return results.whereType<CountryDetails>().toList();
     } on CacheException {
       rethrow;
     }
   }
 
   @override
-  Future<void> toggleFavorite(CountrySummary country) async {
+  Future<void> toggleFavorite(String cca2) async {
     try {
-      final model = CountrySummaryModel(
-        name: country.name,
-        flag: country.flag,
-        population: country.population,
-        cca2: country.cca2,
-        capital: country.capital,
-      );
-      await localDataSource.toggleFavorite(model);
+      await localDataSource.toggleFavorite(cca2);
     } on CacheException {
       rethrow;
     }

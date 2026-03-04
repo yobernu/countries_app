@@ -44,7 +44,7 @@ class AppColors {
         : lightSurface;
   }
 
-  static Color getTextPrimary(BuildContext context) {
+  static Color getTextPrimary(BuildContext context, [FontWeight weight = FontWeight.normal]) {
     return Theme.of(context).brightness == Brightness.dark
         ? darkTextPrimary
         : lightTextPrimary;

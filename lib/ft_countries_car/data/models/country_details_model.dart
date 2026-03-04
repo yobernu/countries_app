@@ -2,6 +2,7 @@ import '../../domain/entities/country_details.dart';
 
 class CountryDetailsModel extends CountryDetails {
   const CountryDetailsModel({
+    required super.cca2,
     required super.name,
     required super.flag,
     required super.population,
@@ -12,7 +13,11 @@ class CountryDetailsModel extends CountryDetails {
     required super.timezones,
   });
 
-  factory CountryDetailsModel.fromJson(Map<String, dynamic> json) {
+  factory CountryDetailsModel.fromJson(
+    Map<String, dynamic> json, {
+    String? fallbackCca2,
+  }) {
+    final cca2 = (json['cca2'] as String?) ?? fallbackCca2 ?? '';
     final name = (json['name']?['common'] as String?) ?? '';
     final flags = json['flags'] as Map<String, dynamic>?;
 
@@ -43,6 +48,7 @@ class CountryDetailsModel extends CountryDetails {
             const <String>[];
 
     return CountryDetailsModel(
+      cca2: cca2,
       name: name,
       flag: flag,
       population: population,

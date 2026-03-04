@@ -8,7 +8,7 @@ class ApiEndpoints {
   // https://restcountries.com/v3.1/name/{name}?fields=name,flags,population,cca2
   static String searchCountries(String name) => '/name/$name';
 
-  static const String summaryFields = 'name,flags,population,cca2,capital';
+  static const String summaryFields = 'name,flags,population,cca2';
 
   // Step 2: Full Data for Detail Screen
   // https://restcountries.com/v3.1/alpha/{code}?fields=name,flags,population,capital,region,subregion,area,timezones

@@ -9,11 +9,8 @@ import '../screens/details_screen.dart';
 
 import '../bloc/favorites/favorites_bloc.dart';
 import '../bloc/favorites/favorites_state.dart';
-import '../widgets/countries_list.dart';
-import '../screens/details_screen.dart';
 
-/// Displays the user's favorited countries.  Uses [CountriesList] configured
-/// to show capital cities and allows unfavoriting directly.
+/// Displays the user's favorited countries and allows unfavoriting directly.
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
 
@@ -52,7 +49,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Favorites',
-            style: TextStyle(color: AppColors.getTextPrimary(context))),
+            style: TextStyle(
+              color: AppColors.getTextPrimary(context),
+              fontWeight: FontWeight.w600,
+            )),
         centerTitle: true,
         backgroundColor: Colors.transparent,
       ),
@@ -84,7 +84,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     onToggleFavorite: () {
                       context
                           .read<FavoritesBloc>()
-                          .add(ToggleFavoriteEvent(country));
+                          .add(ToggleFavoriteEvent(country.cca2));
                     },
                     onTap: () => Navigator.push(
                       context,

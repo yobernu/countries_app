@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../domain/entities/country_summary.dart';
-
 abstract class FavoritesEvent extends Equatable {
   const FavoritesEvent();
 
@@ -14,11 +12,11 @@ class LoadFavorites extends FavoritesEvent {
 }
 
 class ToggleFavoriteEvent extends FavoritesEvent {
-  final CountrySummary country;
+  final String cca2;
 
-  const ToggleFavoriteEvent(this.country);
+  const ToggleFavoriteEvent(this.cca2);
 
   @override
-  List<Object?> get props => [country];
+  List<Object?> get props => [cca2];
 }
 

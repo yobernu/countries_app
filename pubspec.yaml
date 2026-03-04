@@ -41,8 +41,8 @@ dev_dependencies:
   hive_generator: ^2.0.1
   mocktail: ^1.0.4
   bloc_test: ^10.0.0
+  flutter_launcher_icons: ^0.13.1
 
-# This must be at the root level (no indentation)
 flutter:
   uses-material-design: true
 
@@ -51,7 +51,12 @@ flutter:
       fonts:
         - asset: assets\fonts\Inconsolata\Inconsolata-VariableFont_wdth,wght.ttf
           weight: 400
-    # Plus Jakarta Sans is provided at runtime via the google_fonts package;
-    # individual widgets no longer need to reference the font family directly.
   assets:
     - assets/images/close_icon.png
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  adaptive_icon_background: "#FFFFFF"

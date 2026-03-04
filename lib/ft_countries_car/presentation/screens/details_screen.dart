@@ -10,6 +10,7 @@ import 'package:countries_app/ft_countries_car/presentation/bloc/country_details
 import 'package:countries_app/ft_countries_car/presentation/bloc/country_details/country_details_state.dart';
 import 'package:countries_app/ft_countries_car/presentation/widgets/key_stats.dart';
 import 'package:countries_app/ft_countries_car/presentation/widgets/time_zone.dart';
+import 'package:countries_app/ft_countries_car/presentation/widgets/ui_states.dart';
 import 'package:countries_app/core/utils/formatters.dart';
 
 class DetailsScreen extends StatelessWidget {
@@ -33,8 +34,14 @@ class DetailsScreen extends StatelessWidget {
                 color: Theme.of(context).iconTheme.color),
             onPressed: () => Navigator.pop(context),
           ),
-          title:
-              Text(countryName, style: Theme.of(context).textTheme.titleMedium),
+          title: Text(
+            countryName,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: AppColors.getTextPrimary(context),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18
+                ),
+          ),
         ),
         body: BlocBuilder<CountryDetailsBloc, CountryDetailsState>(
           builder: (context, state) {
@@ -42,7 +49,12 @@ class DetailsScreen extends StatelessWidget {
               case CountryDetailsStatus.loading:
                 return const Center(child: CircularProgressIndicator());
               case CountryDetailsStatus.error:
-                return Center(child: Text(state.message));
+                return ErrorStateView(
+                  message: state.message,
+                  onRetry: () => context
+                      .read<CountryDetailsBloc>()
+                      .add(LoadCountryDetails(cca2)),
+                );
               case CountryDetailsStatus.success:
                 final country = state.country!;
                 return SingleChildScrollView(

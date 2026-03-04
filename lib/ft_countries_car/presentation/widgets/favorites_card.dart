@@ -3,10 +3,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:countries_app/core/theme/app_colors.dart';
 import 'package:countries_app/core/theme/app_text_styles.dart';
-import '../../domain/entities/country_summary.dart';
+import '../../domain/entities/country_details.dart';
 
 class FavoritesCard extends StatelessWidget {
-  final CountrySummary country;
+  final CountryDetails country;
   final VoidCallback onToggleFavorite;
   final VoidCallback? onTap;
 
@@ -57,7 +57,7 @@ class FavoritesCard extends StatelessWidget {
                   ),
                   if (country.capital.isNotEmpty)
                     Text(
-                      'Capital: ${country.capital.first}',
+                      'Capital: ${country.capital}',
                       style: AppTextStyles.body.copyWith(
                         color: Theme.of(context).hintColor,
                       ),

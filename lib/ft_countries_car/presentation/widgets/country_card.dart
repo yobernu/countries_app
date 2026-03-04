@@ -12,7 +12,6 @@ class CountriesCard extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback onToggleFavorite;
   final VoidCallback? onTap;
-  final bool showCapital; // if true, display capital instead of population
 
   const CountriesCard({
     super.key,
@@ -20,7 +19,6 @@ class CountriesCard extends StatelessWidget {
     required this.isFavorite,
     required this.onToggleFavorite,
     this.onTap,
-    this.showCapital = false,
   });
 
   @override
@@ -64,21 +62,12 @@ class CountriesCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  if (showCapital && country.capital.isNotEmpty) ...[
-                    Text(
-                      'Capital: ${country.capital.first}',
-                      style: AppTextStyles.body.copyWith(
-                        color: Theme.of(context).hintColor,
-                      ),
+                  Text(
+                    'Population: ${formatPopulation(country.population)}',
+                    style: AppTextStyles.body.copyWith(
+                      color: Theme.of(context).hintColor,
                     ),
-                  ] else ...[
-                    Text(
-                      'Population: ${formatPopulation(country.population)}',
-                      style: AppTextStyles.body.copyWith(
-                        color: Theme.of(context).hintColor,
-                      ),
-                    ),
-                  ],
+                  ),
                 ],
               ),
             ),

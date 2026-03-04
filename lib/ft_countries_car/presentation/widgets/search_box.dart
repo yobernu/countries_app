@@ -33,12 +33,16 @@ class SearchBox extends StatelessWidget {
                 ),
             prefixIcon: Icon(
               Symbols.search,
-              color: Theme.of(context).iconTheme.color,
+              color: AppColors.textHint,
+            ),
+            suffixIconConstraints: const BoxConstraints(
+              minWidth: 30, // Minimum space the suffix area takes
+              minHeight: 30,
             ),
             // show a circular 'x' when there's text; clear on tap
             suffixIcon: hasText
                 ? Padding(
-                    padding: const EdgeInsets.only(right: 4.0),
+                    padding: const EdgeInsets.only(right: 16.0),
                     child: GestureDetector(
                       onTap: () {
                         controller.clear();
@@ -46,8 +50,8 @@ class SearchBox extends StatelessWidget {
                       },
                       child: Image.asset(
                         'assets/images/close_icon.png',
-                        width: 20,
-                        height: 20,
+                        width: 24,
+                        height: 24,
                       ),
                     ),
                   )

@@ -3,9 +3,11 @@ import '../models/country_summary_model.dart';
 import 'package:hive/hive.dart';
 
 abstract class ICountryLocalDataSource {
-  Future<List<CountrySummaryModel>> getFavorites();
-  Future<void> toggleFavorite(CountrySummaryModel country);
+  Future<List<String>> getFavorites();
+  Future<void> toggleFavorite(String cca2);
   Future<bool> isFavorite(String cca2);
+  Future<void> cacheCountryCapital(String cca2, String capital);
+  Future<String?> getCachedCountryCapital(String cca2);
 
   /// Caches the list of countries used on the home screen.
   Future<void> cacheCountries(List<CountrySummaryModel> countries);
@@ -18,35 +20,38 @@ abstract class ICountryLocalDataSource {
 /// Hive‑backed implementation for both favorites and general country cache.
 ///
 /// Two boxes are used:
-///  * `favoritesBox` stores the user's favorite entries keyed by `cca2`.
+///  * `favoritesBox` stores the user's favorite country codes (`cca2`).
 ///  * `cacheBox` holds the most recently downloaded list of countries (also
 ///    keyed by `cca2`) so that the app can show data when offline or when the
 ///    remote service is unavailable.
+///  * `capitalBox` stores capital strings keyed by `cca2` for offline favorites.
 class CountryLocalDataSource implements ICountryLocalDataSource {
-  final Box<CountrySummaryModel> favoritesBox;
+  final Box<String> favoritesBox;
   final Box<CountrySummaryModel> cacheBox;
+  final Box<String> capitalBox;
 
   CountryLocalDataSource(
     this.favoritesBox,
     this.cacheBox,
+    this.capitalBox,
   );
 
   @override
-  Future<List<CountrySummaryModel>> getFavorites() async {
+  Future<List<String>> getFavorites() async {
     try {
-      return favoritesBox.values.toList();
+      return favoritesBox.keys.cast<String>().toList();
     } catch (_) {
       throw CacheException();
     }
   }
 
   @override
-  Future<void> toggleFavorite(CountrySummaryModel country) async {
+  Future<void> toggleFavorite(String cca2) async {
     try {
-      if (favoritesBox.containsKey(country.cca2)) {
-        await favoritesBox.delete(country.cca2);
+      if (favoritesBox.containsKey(cca2)) {
+        await favoritesBox.delete(cca2);
       } else {
-        await favoritesBox.put(country.cca2, country);
+        await favoritesBox.put(cca2, cca2);
       }
     } catch (_) {
       throw CacheException();
@@ -57,6 +62,24 @@ class CountryLocalDataSource implements ICountryLocalDataSource {
   Future<bool> isFavorite(String cca2) async {
     try {
       return favoritesBox.containsKey(cca2);
+    } catch (_) {
+      throw CacheException();
+    }
+  }
+
+  @override
+  Future<void> cacheCountryCapital(String cca2, String capital) async {
+    try {
+      await capitalBox.put(cca2, capital);
+    } catch (_) {
+      throw CacheException();
+    }
+  }
+
+  @override
+  Future<String?> getCachedCountryCapital(String cca2) async {
+    try {
+      return capitalBox.get(cca2);
     } catch (_) {
       throw CacheException();
     }

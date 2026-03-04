@@ -22,14 +22,13 @@ class CountrySummaryModelAdapter extends TypeAdapter<CountrySummaryModel> {
       flag: fields[1] as String,
       population: fields[2] as int,
       cca2: fields[3] as String,
-      capital: (fields[4] as List).cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, CountrySummaryModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -37,9 +36,7 @@ class CountrySummaryModelAdapter extends TypeAdapter<CountrySummaryModel> {
       ..writeByte(2)
       ..write(obj.population)
       ..writeByte(3)
-      ..write(obj.cca2)
-      ..writeByte(4)
-      ..write(obj.capital);
+      ..write(obj.cca2);
   }
 
   @override

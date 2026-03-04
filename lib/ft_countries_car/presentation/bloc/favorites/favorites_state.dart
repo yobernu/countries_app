@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../domain/entities/country_summary.dart';
+import '../../../domain/entities/country_details.dart';
 
 enum FavoritesStatus { initial, loading, success, empty, error }
 
 class FavoritesState extends Equatable {
   final FavoritesStatus status;
-  final List<CountrySummary> favorites;
+  final List<CountryDetails> favorites;
   final String message;
 
   const FavoritesState({
@@ -17,7 +17,7 @@ class FavoritesState extends Equatable {
 
   FavoritesState copyWith({
     FavoritesStatus? status,
-    List<CountrySummary>? favorites,
+    List<CountryDetails>? favorites,
     String? message,
   }) {
     return FavoritesState(

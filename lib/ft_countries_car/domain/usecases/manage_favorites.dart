@@ -1,4 +1,4 @@
-import '../entities/country_summary.dart';
+import '../entities/country_details.dart';
 import '../repositories/country_repository.dart';
 
 class ManageFavorites {
@@ -6,12 +6,12 @@ class ManageFavorites {
 
   ManageFavorites(this.repository);
 
-  Future<List<CountrySummary>> getFavorites() async {
+  Future<List<CountryDetails>> getFavorites() async {
     return await repository.getFavorites();
   }
 
-  Future<void> toggleFavorite(CountrySummary country) async {
-    await repository.toggleFavorite(country);
+  Future<void> toggleFavorite(String cca2) async {
+    await repository.toggleFavorite(cca2);
   }
 
   Future<bool> isFavorite(String cca2) async {

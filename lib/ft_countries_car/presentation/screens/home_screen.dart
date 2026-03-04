@@ -13,7 +13,7 @@ import 'details_screen.dart';
 import '../widgets/countries_list_shimmer.dart';
 import '../widgets/search_box.dart';
 import '../widgets/ui_states.dart';
-import 'favorites_screen.dart' hide SizedBox;
+import 'favorites_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   // filtering/sorting state
-  String _sortField = 'name'; // 'name' or 'population'
+  String _sortField = 'default'; // 'default', 'name' or 'population'
   bool _sortAsc = true;
 
   @override
@@ -92,6 +92,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  String _getSortLabel() {
+    switch (_sortField) {
+      case 'name':
+        return 'Name';
+      case 'population':
+        return 'Population';
+      default:
+        return 'Default';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget buildHomeTab() {
@@ -130,9 +141,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                   PopupMenuButton<String>(
-                    icon: const Icon(Icons.filter_list),
                     onSelected: (value) {
                       setState(() {
+                        if (value == 'default') {
+                          _sortField = 'default';
+                          _sortAsc = true;
+                          return;
+                        }
+
                         if (value == 'name' || value == 'population') {
                           if (_sortField == value) {
                             _sortAsc = !_sortAsc;
@@ -145,11 +161,89 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     itemBuilder: (_) => [
                       PopupMenuItem(
-                          value: 'name', child: const Text('Sort by name')),
+                        value: 'default',
+                        child: Row(
+                          children: [
+                            Icon(
+                              _sortField == 'default'
+                                  ? Icons.check
+                                  : Icons.unfold_more,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text('Default'),
+                          ],
+                        ),
+                      ),
                       PopupMenuItem(
-                          value: 'population',
-                          child: const Text('Sort by population')),
+                        value: 'name',
+                        child: Row(
+                          children: [
+                            Icon(
+                              _sortField == 'name'
+                                  ? (_sortAsc
+                                      ? Icons.arrow_upward
+                                      : Icons.arrow_downward)
+                                  : Icons.sort_by_alpha,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text('Name'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'population',
+                        child: Row(
+                          children: [
+                            Icon(
+                              _sortField == 'population'
+                                  ? (_sortAsc
+                                      ? Icons.arrow_upward
+                                      : Icons.arrow_downward)
+                                  : Icons.people_alt_outlined,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text('Population'),
+                          ],
+                        ),
+                      ),
                     ],
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.getSurface(context),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Theme.of(context)
+                                  .colorScheme
+                                  .outlineVariant
+                                  .withAlpha(180),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.filter_list, size: 18),
+                          const SizedBox(width: 6),
+                          Text(
+                            _getSortLabel(),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          if (_sortField != 'default') ...[
+                            const SizedBox(width: 4),
+                            Icon(
+                              _sortAsc
+                                  ? Icons.keyboard_arrow_up
+                                  : Icons.keyboard_arrow_down,
+                              size: 18,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -190,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             list.sort((a, b) => _sortAsc
                                 ? a.name.compareTo(b.name)
                                 : b.name.compareTo(a.name));
-                          } else {
+                          } else if (_sortField == 'population') {
                             list.sort((a, b) => _sortAsc
                                 ? a.population.compareTo(b.population)
                                 : b.population.compareTo(a.population));
@@ -236,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: (idx) {
           setState(() => _selectedIndex = idx);
         },
-        selectedItemColor: AppColors.primary,
+        selectedItemColor: Theme.of(context).iconTheme.color,
         unselectedItemColor: Theme.of(context).iconTheme.color,
         type: BottomNavigationBarType.fixed,
         items: const [
