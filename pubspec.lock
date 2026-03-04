@@ -384,6 +384,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.8.1"
+<<<<<<< HEAD
   google_fonts:
     dependency: "direct main"
     description:
@@ -392,6 +393,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.0"
+=======
+>>>>>>> unit_test
   graphs:
     dependency: transitive
     description:
