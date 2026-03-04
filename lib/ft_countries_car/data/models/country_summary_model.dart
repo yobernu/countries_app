@@ -1,11 +1,16 @@
+import 'package:hive/hive.dart';
+
 import '../../domain/entities/country_summary.dart';
+
+part 'country_summary_model.g.dart';
 
 class CountrySummaryModel extends CountrySummary {
   const CountrySummaryModel({
-    required super.name,
-    required super.flag,
-    required super.population,
-    required super.cca2,
+    @HiveField(0) required super.name,
+    @HiveField(1) required super.flag,
+    @HiveField(2) required super.population,
+    @HiveField(3) required super.cca2,
+    @HiveField(4) required super.capital,
   });
 
   factory CountrySummaryModel.fromJson(Map<String, dynamic> json) {
@@ -25,11 +30,15 @@ class CountrySummaryModel extends CountrySummary {
 
     final cca2 = (json['cca2'] as String?) ?? '';
 
+    // API may provide capital as a list of strings
+    final capitals = (json['capital'] as List?)?.cast<String>() ?? const [];
+
     return CountrySummaryModel(
       name: name,
       flag: flag,
       population: population,
       cca2: cca2,
+      capital: capitals,
     );
   }
 
@@ -40,6 +49,7 @@ class CountrySummaryModel extends CountrySummary {
       'flag': flag,
       'population': population,
       'cca2': cca2,
+      'capital': capital,
     };
   }
 }

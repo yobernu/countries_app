@@ -1,31 +1,40 @@
-import 'dart:convert';
-
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../core/error/exceptions.dart';
 import '../models/country_summary_model.dart';
+import 'package:hive/hive.dart';
 
 abstract class ICountryLocalDataSource {
   Future<List<CountrySummaryModel>> getFavorites();
   Future<void> toggleFavorite(CountrySummaryModel country);
   Future<bool> isFavorite(String cca2);
+
+  /// Caches the list of countries used on the home screen.
+  Future<void> cacheCountries(List<CountrySummaryModel> countries);
+  /// Retrieves the cached list of countries; throws [CacheException] on failure.
+  Future<List<CountrySummaryModel>> getCachedCountries();
+  /// Searches the cached list of countries for the given query.
+  Future<List<CountrySummaryModel>> searchCachedCountries(String query);
 }
 
+/// Hive‑backed implementation for both favorites and general country cache.
+///
+/// Two boxes are used:
+///  * `favoritesBox` stores the user's favorite entries keyed by `cca2`.
+///  * `cacheBox` holds the most recently downloaded list of countries (also
+///    keyed by `cca2`) so that the app can show data when offline or when the
+///    remote service is unavailable.
 class CountryLocalDataSource implements ICountryLocalDataSource {
-  static const _favoritesKey = 'favorite_countries';
+  final Box<CountrySummaryModel> favoritesBox;
+  final Box<CountrySummaryModel> cacheBox;
 
-  final SharedPreferences sharedPreferences;
-
-  CountryLocalDataSource(this.sharedPreferences);
+  CountryLocalDataSource(
+    this.favoritesBox,
+    this.cacheBox,
+  );
 
   @override
   Future<List<CountrySummaryModel>> getFavorites() async {
     try {
-      final stored = sharedPreferences.getStringList(_favoritesKey) ?? [];
-      return stored
-          .map((e) =>
-              CountrySummaryModel.fromJson(jsonDecode(e) as Map<String, dynamic>))
-          .toList();
+      return favoritesBox.values.toList();
     } catch (_) {
       throw CacheException();
     }
@@ -34,26 +43,11 @@ class CountryLocalDataSource implements ICountryLocalDataSource {
   @override
   Future<void> toggleFavorite(CountrySummaryModel country) async {
     try {
-      final stored = sharedPreferences.getStringList(_favoritesKey) ?? [];
-
-      final List<Map<String, dynamic>> decoded = stored
-          .map((e) => jsonDecode(e) as Map<String, dynamic>)
-          .toList();
-
-      final existingIndex = decoded.indexWhere(
-        (element) => element['cca2'] == country.cca2,
-      );
-
-      if (existingIndex >= 0) {
-        decoded.removeAt(existingIndex);
+      if (favoritesBox.containsKey(country.cca2)) {
+        await favoritesBox.delete(country.cca2);
       } else {
-        decoded.add(country.toJson());
+        await favoritesBox.put(country.cca2, country);
       }
-
-      final encoded =
-          decoded.map((e) => jsonEncode(e)).toList(growable: false);
-
-      await sharedPreferences.setStringList(_favoritesKey, encoded);
     } catch (_) {
       throw CacheException();
     }
@@ -62,16 +56,40 @@ class CountryLocalDataSource implements ICountryLocalDataSource {
   @override
   Future<bool> isFavorite(String cca2) async {
     try {
-      final stored = sharedPreferences.getStringList(_favoritesKey) ?? [];
+      return favoritesBox.containsKey(cca2);
+    } catch (_) {
+      throw CacheException();
+    }
+  }
 
-      for (final item in stored) {
-        final map = jsonDecode(item) as Map<String, dynamic>;
-        if (map['cca2'] == cca2) {
-          return true;
-        }
-      }
+  @override
+  Future<void> cacheCountries(List<CountrySummaryModel> countries) async {
+    try {
+      await cacheBox.clear();
+      final entries = Map.fromEntries(
+        countries.map((c) => MapEntry(c.cca2, c)),
+      );
+      await cacheBox.putAll(entries);
+    } catch (_) {
+      throw CacheException();
+    }
+  }
 
-      return false;
+  @override
+  Future<List<CountrySummaryModel>> getCachedCountries() async {
+    try {
+      return cacheBox.values.toList();
+    } catch (_) {
+      throw CacheException();
+    }
+  }
+
+  @override
+  Future<List<CountrySummaryModel>> searchCachedCountries(String query) async {
+    try {
+      final all = cacheBox.values.toList();
+      final lower = query.toLowerCase();
+      return all.where((c) => c.name.toLowerCase().contains(lower)).toList();
     } catch (_) {
       throw CacheException();
     }

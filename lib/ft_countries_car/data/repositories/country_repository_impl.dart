@@ -18,8 +18,20 @@ class CountryRepositoryImpl implements ICountryRepository {
   @override
   Future<List<CountrySummary>> getAllCountries() async {
     try {
-      return await remoteDataSource.getAllCountries();
+      final remoteList = await remoteDataSource.getAllCountries();
+      // attempt to persist latest result for offline/home screen usage
+      try {
+        await localDataSource.cacheCountries(remoteList);
+      } catch (_) {
+        // ignore caching errors – remote result is still returned
+      }
+      return remoteList;
     } on ServerException {
+      // fall back to cached value if available
+      final cached = await localDataSource.getCachedCountries();
+      if (cached.isNotEmpty) {
+        return cached;
+      }
       rethrow;
     }
   }
@@ -38,7 +50,8 @@ class CountryRepositoryImpl implements ICountryRepository {
     try {
       return await remoteDataSource.searchCountries(query);
     } on ServerException {
-      rethrow;
+      // if remote fails, try searching locally
+      return await localDataSource.searchCachedCountries(query);
     }
   }
 
@@ -59,6 +72,7 @@ class CountryRepositoryImpl implements ICountryRepository {
         flag: country.flag,
         population: country.population,
         cca2: country.cca2,
+        capital: country.capital,
       );
       await localDataSource.toggleFavorite(model);
     } on CacheException {

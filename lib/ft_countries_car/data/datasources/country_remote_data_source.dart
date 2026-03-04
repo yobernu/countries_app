@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 
 import '../../../core/error/exceptions.dart';
 import '../../../core/network/api_endpoints.dart';
-import '../../../core/network/cache_interceptor.dart';
 import '../../../core/network/dio_client.dart';
 import '../models/country_details_model.dart';
 import '../models/country_summary_model.dart';
@@ -28,9 +27,6 @@ class CountryRemoteDataSource implements ICountryRemoteDataSource {
         queryParameters: {
           'fields': ApiEndpoints.summaryFields,
         },
-        options: CacheInterceptorWrapper.cacheOptions(
-          const Duration(minutes: 10),
-        ),
       );
 
       if (response.data is! List) {
@@ -57,9 +53,6 @@ class CountryRemoteDataSource implements ICountryRemoteDataSource {
         queryParameters: {
           'fields': ApiEndpoints.summaryFields,
         },
-        options: CacheInterceptorWrapper.cacheOptions(
-          const Duration(minutes: 10),
-        ),
       );
 
       if (response.data is! List) {
@@ -86,9 +79,6 @@ class CountryRemoteDataSource implements ICountryRemoteDataSource {
         queryParameters: {
           'fields': ApiEndpoints.detailFields,
         },
-        options: CacheInterceptorWrapper.cacheOptions(
-          const Duration(minutes: 30),
-        ),
       );
 
       // REST Countries alpha endpoint returns a list with one item.
@@ -110,4 +100,3 @@ class CountryRemoteDataSource implements ICountryRemoteDataSource {
     }
   }
 }
-
