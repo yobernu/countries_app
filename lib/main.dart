@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/theme/app_theme.dart';
+import 'core/bloc/theme/theme_bloc.dart';
 
 import 'core/di/injection_container.dart';
 import 'ft_countries_car/domain/usecases/get_all_countries.dart';
@@ -19,26 +20,16 @@ Future<void> main() async {
   runApp(const CountriesApp());
 }
 
-class CountriesApp extends StatefulWidget {
+class CountriesApp extends StatelessWidget {
   const CountriesApp({super.key});
-
-  @override
-  CountriesAppState createState() => CountriesAppState();
-}
-
-class CountriesAppState extends State<CountriesApp> {
-  ThemeMode _themeMode = ThemeMode.light;
-
-  void toggleTheme() {
-    setState(() {
-      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (_) => ThemeBloc()..add(LoadThemeEvent()),
+        ),
         BlocProvider(
           create: (_) => CountryListBloc(
             getAllCountries: sl<GetAllCountries>(),
@@ -47,19 +38,22 @@ class CountriesAppState extends State<CountriesApp> {
         ),
         // CountryDetailsBloc is provided locally by DetailsScreen when needed.
         BlocProvider(
-          create: (_) => FavoritesBloc(sl<ManageFavorites>())
-            ..add(const LoadFavorites()),
+          create: (_) =>
+              FavoritesBloc(sl<ManageFavorites>())..add(const LoadFavorites()),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Countries',
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        themeMode: _themeMode,
-        home: const HomeScreen(),
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, themeState) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Countries',
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            themeMode: themeState.themeMode,
+            home: const HomeScreen(),
+          );
+        },
       ),
     );
   }
 }
-

@@ -4,6 +4,7 @@ import 'package:countries_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/bloc/theme/theme_bloc.dart';
 import '../bloc/country_list/country_list_bloc.dart';
 import '../bloc/country_list/country_list_event.dart';
 import '../bloc/country_list/country_list_state.dart';
@@ -69,6 +70,28 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  IconData _getThemeIcon(ThemeMode themeMode) {
+    switch (themeMode) {
+      case ThemeMode.light:
+        return Icons.light_mode;
+      case ThemeMode.dark:
+        return Icons.dark_mode;
+      case ThemeMode.system:
+        return Icons.brightness_auto;
+    }
+  }
+
+  String _getThemeTooltip(ThemeMode themeMode) {
+    switch (themeMode) {
+      case ThemeMode.light:
+        return 'Light mode';
+      case ThemeMode.dark:
+        return 'Dark mode';
+      case ThemeMode.system:
+        return 'System theme';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget buildHomeTab() {
@@ -94,6 +117,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       onChanged: _onSearchChanged,
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  BlocBuilder<ThemeBloc, ThemeState>(
+                    builder: (context, themeState) {
+                      return IconButton(
+                        onPressed: () {
+                          context.read<ThemeBloc>().add(ToggleThemeEvent());
+                        },
+                        icon: Icon(_getThemeIcon(themeState.themeMode)),
+                        tooltip: _getThemeTooltip(themeState.themeMode),
+                      );
+                    },
+                  ),
                   PopupMenuButton<String>(
                     icon: const Icon(Icons.filter_list),
                     onSelected: (value) {
@@ -109,8 +144,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       });
                     },
                     itemBuilder: (_) => [
-                      PopupMenuItem(value: 'name', child: const Text('Sort by name')),
-                      PopupMenuItem(value: 'population', child: const Text('Sort by population')),
+                      PopupMenuItem(
+                          value: 'name', child: const Text('Sort by name')),
+                      PopupMenuItem(
+                          value: 'population',
+                          child: const Text('Sort by population')),
                     ],
                   ),
                 ],
@@ -120,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: RefreshIndicator(
                   onRefresh: _onRefresh,
                   color: AppColors.primary,
-                  backgroundColor: Colors.white,
+                  backgroundColor: AppColors.getSurface(context),
                   edgeOffset: 16,
                   strokeWidth: 3.0,
                   displacement: 40,
@@ -128,7 +166,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (context, state) {
                       switch (state.status) {
                         case CountryListStatus.loading:
-                          return _scrollableWrapper(const CountriesListShimmer());
+                          return _scrollableWrapper(
+                              const CountriesListShimmer());
                         case CountryListStatus.error:
                           return _scrollableWrapper(
                             ErrorStateView(
@@ -198,6 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() => _selectedIndex = idx);
         },
         selectedItemColor: AppColors.primary,
+        unselectedItemColor: Theme.of(context).iconTheme.color,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(

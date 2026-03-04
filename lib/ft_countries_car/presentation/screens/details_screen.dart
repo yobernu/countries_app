@@ -16,7 +16,8 @@ class DetailsScreen extends StatelessWidget {
   final String cca2;
   final String countryName;
 
-  const DetailsScreen({super.key, required this.cca2, required this.countryName});
+  const DetailsScreen(
+      {super.key, required this.cca2, required this.countryName});
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +26,15 @@ class DetailsScreen extends StatelessWidget {
         ..add(LoadCountryDetails(cca2)),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: Icon(Icons.arrow_back,
+                color: Theme.of(context).iconTheme.color),
             onPressed: () => Navigator.pop(context),
           ),
-          title: Text(countryName, style: Theme.of(context).textTheme.titleMedium),
+          title:
+              Text(countryName, style: Theme.of(context).textTheme.titleMedium),
         ),
         body: BlocBuilder<CountryDetailsBloc, CountryDetailsState>(
           builder: (context, state) {
@@ -76,7 +79,8 @@ class DetailsScreen extends StatelessWidget {
                                           .textTheme
                                           .titleMedium
                                           ?.copyWith(
-                                              color: AppColors.textPrimary,
+                                              color: AppColors.getTextPrimary(
+                                                  context),
                                               fontWeight: FontWeight.w800) ??
                                       Theme.of(context).textTheme.titleMedium),
                               const SizedBox(height: 8),
@@ -101,12 +105,14 @@ class DetailsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              country.timezones.length > 1 ? 'TimeZones' : 'Timezone',
+                              country.timezones.length > 1
+                                  ? 'TimeZones'
+                                  : 'Timezone',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium
                                   ?.copyWith(
-                                    color: AppColors.textPrimary,
+                                    color: AppColors.getTextPrimary(context),
                                     fontWeight: FontWeight.w800,
                                   ),
                             ),
@@ -115,12 +121,9 @@ class DetailsScreen extends StatelessWidget {
                               spacing: 12,
                               runSpacing: 12,
                               children: country.timezones
-                                  .map((tz) =>
-                                      TimeZone(timezone: tz))
+                                  .map((tz) => TimeZone(timezone: tz))
                                   .toList(),
                             ),
-
-
                             SizedBox(height: 32),
                           ],
                         ),

@@ -22,9 +22,6 @@ class FavoritesCard extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-        ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           children: [
@@ -38,12 +35,12 @@ class FavoritesCard extends StatelessWidget {
                 placeholder: (_, __) => Container(
                   width: 56,
                   height: 56,
-                  color: AppColors.backgroundLight,
+                  color: AppColors.getBackgroundLight(context),
                 ),
                 errorWidget: (_, __, ___) => Container(
                   width: 56,
                   height: 56,
-                  color: AppColors.backgroundLight,
+                  color: AppColors.getBackgroundLight(context),
                 ),
               ),
             ),

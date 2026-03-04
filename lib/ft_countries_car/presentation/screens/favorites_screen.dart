@@ -51,15 +51,17 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favorites', style: TextStyle(color: AppColors.primary)),
+        title: Text('Favorites',
+            style: TextStyle(color: AppColors.getTextPrimary(context))),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
       ),
       body: BlocBuilder<FavoritesBloc, FavoritesState>(
         builder: (context, state) {
           if (state.status == FavoritesStatus.initial) {
             context.read<FavoritesBloc>().add(const LoadFavorites());
           }
-      
+
           Widget body;
           switch (state.status) {
             case FavoritesStatus.loading:
@@ -88,8 +90,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => DetailsScreen(
-                                cca2: country.cca2,
-                                countryName: country.name)),
+                              cca2: country.cca2, countryName: country.name)),
                     ),
                   );
                 },
@@ -103,7 +104,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           return RefreshIndicator(
             onRefresh: _onRefresh,
             color: AppColors.primary,
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.getSurface(context),
             edgeOffset: 16,
             strokeWidth: 3.0,
             displacement: 40,

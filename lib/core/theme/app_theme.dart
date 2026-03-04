@@ -29,8 +29,7 @@ class AppTheme {
     // further customisation can be layered on base if desired
     return base.copyWith(
       inputDecorationTheme: InputDecorationTheme(
-        hintStyle:
-            AppTextStyles.body.copyWith(color: AppColors.textHint),
+        hintStyle: AppTextStyles.body.copyWith(color: AppColors.textHint),
         filled: true,
         fillColor: AppColors.backgroundLight,
         border: OutlineInputBorder(
@@ -49,25 +48,24 @@ class AppTheme {
     final base = ThemeData(
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
-        background: Colors.black,
-        surface: Colors.grey[900]!,
+        background: AppColors.darkBackground,
+        surface: AppColors.darkSurface,
         brightness: Brightness.dark,
       ),
-      scaffoldBackgroundColor: Colors.black,
+      scaffoldBackgroundColor: AppColors.darkBackground,
       useMaterial3: true,
       textTheme: GoogleFonts.plusJakartaSansTextTheme().apply(
-        bodyColor: Colors.white,
-        displayColor: Colors.white,
+        bodyColor: AppColors.darkTextPrimary,
+        displayColor: AppColors.darkTextPrimary,
       ),
       fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
     );
 
     return base.copyWith(
       inputDecorationTheme: InputDecorationTheme(
-        hintStyle:
-            AppTextStyles.body.copyWith(color: AppColors.textHint.withOpacity(0.7)),
+        hintStyle: AppTextStyles.body.copyWith(color: AppColors.darkTextHint),
         filled: true,
-        fillColor: Colors.grey[800],
+        fillColor: AppColors.darkBackgroundLight,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -75,7 +73,7 @@ class AppTheme {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
-      iconTheme: IconThemeData(color: Colors.grey[300]),
+      iconTheme: IconThemeData(color: AppColors.darkTextSecondary),
     );
   }
 }

@@ -3,10 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
 
-/// Font family names used throughout the application.
-///
-/// `Plus Jakarta Sans` is loaded dynamically via google_fonts, while
-/// `Inconsolata` is bundled as an asset (see pubspec.yaml).
 class AppFonts {
   AppFonts._();
 
@@ -14,11 +10,6 @@ class AppFonts {
   static const String monospace = 'Inconsolata';
 }
 
-/// Shared text styles using the chosen font(s) and colour palette.
-///
-/// Widgets should either consume these directly or rely on the
-/// [ThemeData.textTheme] defined in [AppTheme].  Overriding the
-/// font family in individual widgets is no longer necessary.
 class AppTextStyles {
   AppTextStyles._();
 
@@ -43,5 +34,4 @@ class AppTextStyles {
     fontSize: 13,
     height: 1.4,
   );
-
 }

@@ -18,9 +18,9 @@ class TimeZone extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: AppColors.white,
+        color: AppColors.getSurface(context),
         border: Border.all(
-          color: AppColors.border,
+          color: AppColors.getBorder(context),
           width: 1,
         ),
       ),
@@ -35,15 +35,16 @@ class TimeZone extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  
                   timeZoneFormat(timezone),
                   textAlign: TextAlign.left,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w800,
-                        height: 1.25,
-                      ) ??
-                      AppTextStyles.title.copyWith(color: AppColors.textPrimary, height: 1.25),
+                            color: AppColors.getTextPrimary(context),
+                            fontWeight: FontWeight.w800,
+                            height: 1.25,
+                          ) ??
+                      AppTextStyles.title.copyWith(
+                          color: AppColors.getTextPrimary(context),
+                          height: 1.25),
                 ),
               ],
             ),

@@ -12,17 +12,17 @@ class KeyStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final labelStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-      color: AppColors.textSecondary,
-      fontSize: 14,
-      height: 1.5,
-    );
+          color: AppColors.getTextSecondary(context),
+          fontSize: 14,
+          height: 1.5,
+        );
 
     final valueStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-      color: AppColors.textPrimary,
-      fontWeight: FontWeight.w500,
-      fontSize: 14,
-      height: 1.5,
-    );
+          color: AppColors.getTextPrimary(context),
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+          height: 1.5,
+        );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -35,7 +35,8 @@ class KeyStats extends StatelessWidget {
             child: Text(
               value,
               textAlign: TextAlign.right,
-              style: valueStyle ?? AppTextStyles.title.copyWith(fontWeight: FontWeight.bold),
+              style: valueStyle ??
+                  AppTextStyles.title.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
         ],

@@ -43,12 +43,12 @@ class CountriesCard extends StatelessWidget {
                   placeholder: (_, __) => Container(
                     width: 100,
                     height: 56,
-                    color: AppColors.backgroundLight,
+                    color: AppColors.getBackgroundLight(context),
                   ),
                   errorWidget: (_, __, ___) => Container(
                     width: 100,
                     height: 56,
-                    color: AppColors.backgroundLight,
+                    color: AppColors.getBackgroundLight(context),
                   ),
                 ),
               ),
@@ -86,7 +86,9 @@ class CountriesCard extends StatelessWidget {
               onPressed: onToggleFavorite,
               icon: Icon(
                 isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: isFavorite ? AppColors.favorite : Colors.black87,
+                color: isFavorite
+                    ? AppColors.favorite
+                    : Theme.of(context).iconTheme.color,
               ),
             ),
           ],
